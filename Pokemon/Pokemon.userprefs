@@ -1,0 +1,17 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\__Scripts\BattleScreen.cs">
+    <Files>
+      <File FileName="Assets\__Scripts\BattleScreen.cs" Line="111" Column="35" />
+      <File FileName="Assets\__Scripts\Menu_Item.cs" Line="30" Column="92" />
+      <File FileName="Assets\__Scripts\Main.cs" Line="15" Column="39" />
+      <File FileName="Assets\__Scripts\Player.cs" Line="266" Column="18" />
+      <File FileName="Assets\__Scripts\Menu.cs" Line="80" Column="41" />
+      <File FileName="Assets\__Scripts\Dialog.cs" Line="48" Column="23" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
