@@ -18,6 +18,7 @@ public class Main : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake() {
+		Screen.SetResolution(10, 5, true);
 		S = this;
 	}
 	

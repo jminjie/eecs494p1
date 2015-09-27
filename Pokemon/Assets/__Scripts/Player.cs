@@ -77,8 +77,7 @@ public class Player : MonoBehaviour {
 			parcel.isTossable = false;
 			itemPack.Add (parcel);
 			
-			Pokemon charles = new Pokemon();
-			charles.pokemonName = "CHARMANDER";
+			Pokemon charles = new Pokemon("CHARMANDER");
 			charles.pokemonNickname = "CHARLES";
 			charles.maxHP = 30;
 			charles.curHP = 30;
@@ -95,12 +94,11 @@ public class Player : MonoBehaviour {
 			charles.ot = "RED"; // original trainer
 			charles.exppoints = 0;
 			charles.moves = new List<Move>();
-			charles.moves.Add (new Move ("SCRATCH", 35, 35));
-			charles.moves.Add (new Move ("GROWL", 40, 40));
+			charles.moves.Add (new Move ("SCRATCH", "NORMAL", 35, 35));
+			charles.moves.Add (new Move ("GROWL", "NORMAL", "ATTACK fell!", 40, 40));
 			party.Add (charles);
 			
-			Pokemon york = new Pokemon();
-			york.pokemonName = "RATTATA";
+			Pokemon york = new Pokemon("RATTATA");
 			york.pokemonNickname = "YORK";
 			york.maxHP = 25;
 			york.curHP = 25;
@@ -117,8 +115,8 @@ public class Player : MonoBehaviour {
 			york.ot = "RED"; // original trainer
 			york.exppoints = 0;
 			york.moves = new List<Move>();
-			york.moves.Add (new Move ("SCRATCH", 35, 35));
-			york.moves.Add (new Move ("TAIL WHIP", 40, 40));
+			york.moves.Add (new Move ("SCRATCH", "NORMAL", 35, 35));
+			york.moves.Add (new Move ("TAIL WHIP", "NORMAL", "DEFENSE fell!", 40, 40));
 			party.Add (york);
 		}
 		
@@ -140,34 +138,25 @@ public class Player : MonoBehaviour {
 			}
 			
 			if (!moving && !Main.S.inDialog && !Main.S.paused) {
-				
-				
 				if(Input.GetKeyDown(KeyCode.Z)){
 					CheckForAction();
 				}
-				
 				if (Input.GetKey (KeyCode.RightArrow)) {
 					moveVec = Vector3.right;
 					direction = Direction.right;
 					sprend.sprite = rightSprite;
 					moving = true;
-				}
-				
-				else if (Input.GetKey (KeyCode.LeftArrow)) {
+				} else if (Input.GetKey (KeyCode.LeftArrow)) {
 					moveVec = Vector3.left;
 					direction = Direction.left;
 					sprend.sprite = leftSprite;
 					moving = true;
-				}
-				
-				else if (Input.GetKey (KeyCode.UpArrow)) {
+				} else if (Input.GetKey (KeyCode.UpArrow)) {
 					moveVec = Vector3.up;
 					direction = Direction.up;
 					sprend.sprite = upSprite;
 					moving = true;
-				}
-				
-				else if (Input.GetKey (KeyCode.DownArrow)) {
+				} else if (Input.GetKey (KeyCode.DownArrow)) {
 					moveVec = Vector3.down;
 					direction = Direction.down;
 					sprend.sprite = downSprite;
@@ -182,13 +171,10 @@ public class Player : MonoBehaviour {
 					//just incase box collider is disabled when we need it to not be disabled
 					gameObject.GetComponent<BoxCollider>().enabled = true;
 				}
-				
 				if(Physics.Raycast(GetRay(), out hitInfo, 1f, GetLayerMask(new string[] {"Immovable", "NPC", "Pickup", "Ledge","WaterTile"}) )){
-					
 					moveVec = Vector3.zero;
 					moving = false;
 				}
-				
 				if(Physics.Raycast(GetRay(), out hitInfo, 1f, GetLayerMask(new string[] {"Ledge"})) && direction == Direction.down && Input.GetKey(KeyCode.DownArrow)){
 					//check if the ledge underneath is a "Ledge" layer, if so and the player presses down, shift the player down
 					Vector3 underLedge = transform.position;
@@ -197,23 +183,15 @@ public class Player : MonoBehaviour {
 					moving = true;
 					transform.position = Vector3.Lerp(transform.position, underLedge, Time.deltaTime * jumpSpeed);
 				}
-				
 				targetPos = pos + moveVec;
-				
-			} 
-			
-			else{
+			} else {
 				if((targetPos - pos).magnitude < moveSpeed * Time.fixedDeltaTime){
 					pos = targetPos;
 					moving = false;
-					
 				} else{
 					pos += (targetPos - pos).normalized * moveSpeed * Time.fixedDeltaTime;
 				}
-				
-				
 			}
-			
 		}
 		
 		public void CheckForAction(){
@@ -223,7 +201,6 @@ public class Player : MonoBehaviour {
 				npc.FacePlayer(direction);
 				npc.PlayDialog();
 			}
-			
 			if (Physics.Raycast (GetRay (), out hitInfo, 1f, GetLayerMask (new string[] {"Pickup"}))) {
 				//picking up item
 				print("Pickup Item " + hitInfo + "           ");
@@ -231,7 +208,6 @@ public class Player : MonoBehaviour {
 				item.PlayDialog();
 				item.enabled = false;
 			}
-			
 		}
 		
 		Ray GetRay(){
@@ -252,11 +228,9 @@ public class Player : MonoBehaviour {
 		
 		int GetLayerMask(string[] layerNames){
 			int layerMask = 0;
-			
 			foreach(string layer in layerNames){
 				layerMask = layerMask | (1 << LayerMask.NameToLayer(layer));
 			}
-			
 			return layerMask;
 		}
 		

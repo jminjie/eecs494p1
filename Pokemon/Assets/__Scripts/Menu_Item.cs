@@ -12,6 +12,7 @@ public class Menu_Item : MonoBehaviour {
 	public int selectedItem;
 	int numSlots = 9;
 	int maxItemNameChar = 12;
+	public bool switching = false;
 
 	void Awake() {
 		S = this;
@@ -108,8 +109,10 @@ public class Menu_Item : MonoBehaviour {
 	}
 
 	public void useSelectedItem(){
-		print ("Used " + Player.S.itemPack [selectedItem].itemName);
+
 		Player.S.itemPack[selectedItem].itemQuantity--;
+		string[] m = {Player.S.name + " used " + Player.S.itemPack [selectedItem].itemName + "!"};
+		Dialog.S.ShowMessage (m);
 		if (Player.S.itemPack[selectedItem].itemQuantity == 0) {
 			Player.S.itemPack.RemoveAt(selectedItem);
 		}
@@ -118,6 +121,7 @@ public class Menu_Item : MonoBehaviour {
 			Menu_Item.S.closeItemMenu();
 			Menu_Item.S.showItemMenu();
 		}
+
 	}
 
 	public void tossSelectedItem(){

@@ -45,7 +45,7 @@ public class Menu : MonoBehaviour {
 
 	}
 
-	bool secondaryMenuOpen() {
+	public bool secondaryMenuOpen() {
 		return Main.S.playerMenuOpen || Main.S.itemMenuOpen
 			|| Main.S.selectionBoxOpen || Main.S.pokemonMenuOpen
 				|| Main.S.pokemonDetailsOpen[0] || Main.S.pokemonDetailsOpen[1];
@@ -53,7 +53,7 @@ public class Menu : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (!secondaryMenuOpen ()) {
+		if (!secondaryMenuOpen () && !Main.S.battleScreenOpen) {
 			if (Input.GetKeyDown (KeyCode.X)) {
 				gameObject.SetActive (false);
 				Main.S.paused = false;
@@ -61,7 +61,8 @@ public class Menu : MonoBehaviour {
 				if (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.Z)) {
 					switch (activeItem) {
 					case (int) menuItem.pokedex:
-						print ("Pokedex menu selected");
+						string[] oak = {"OAK: Sorry " + Player.S.name + ", I'm still working on the POKEDEX!"};
+						Dialog.S.ShowMessage(oak);
 						break;
 					case (int) menuItem.pokemon:
 						Menu_Pokemon.S.showPokemonMenu();
@@ -73,10 +74,10 @@ public class Menu : MonoBehaviour {
 						Menu_Player.S.showPlayerMenu ();
 						break;
 					case (int) menuItem.save:
-						print ("Save menu selected");
+						string[] saver = {"OAK: You don't really need to save your game!"};
+						Dialog.S.ShowMessage(saver);
 						break;
 					case (int) menuItem.option:
-						print ("Option menu selected");
 						BattleScreen.S.showBattleScreen();
 						break;
 					case (int) menuItem.exit:

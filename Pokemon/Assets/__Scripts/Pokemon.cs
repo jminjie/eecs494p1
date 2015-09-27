@@ -22,6 +22,11 @@ public class Pokemon : MonoBehaviour {
 	public int exppoints;
 	public List<Move> moves;
 
+	public Pokemon (string name){
+		pokemonName = name;
+		pokemonNickname = name;
+	}
+
 	public int expToLevel(int level){
 		// For now assume every level takes 100 exp to pass
 		return 100;

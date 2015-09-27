@@ -81,17 +81,25 @@ public class SelectionBox : MonoBehaviour {
 		} else if (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.Z)) {
 			// Somehow need to communicate what was selected to whatever opened SelectionBox
 			if (choices[selection].GetComponent<GUIText> ().text == "USE") {
-				if (Player.S.itemPack[Menu_Item.S.selectedItem].isUseableInWorld) {
-					Menu_Item.S.useSelectedItem();
-				} else {
-					Dialog.S.gameObject.SetActive (true);
-					Color maxAlpha = GameObject.Find ("DialogBackground").GetComponent<GUITexture> ().color;
-					maxAlpha.a = 255;
-					GameObject.Find ("DialogBackground").GetComponent<GUITexture> ().color = maxAlpha;
-					string[] oak = {"OAK: This isn't the time for that!"};
-					Dialog.S.ShowMessage (oak);
+				if (Main.S.battleScreenOpen) {
+					if (Player.S.itemPack[Menu_Item.S.selectedItem].isUseableInBattle) {
+						Menu_Item.S.useSelectedItem();
+						Menu_Item.S.closeItemMenu();
+						BattleScreen.S.doEnemyTurnNext = true;
+					} else {
+						string[] oak = {"OAK: This isn't the time for that!"};
+						Dialog.S.ShowMessage (oak);
+					}
+					closeSelectionBox ();
+				} else { 
+					if (Player.S.itemPack[Menu_Item.S.selectedItem].isUseableInWorld) {
+						Menu_Item.S.useSelectedItem();
+					} else {
+						string[] oak = {"OAK: This isn't the time for that!"};
+						Dialog.S.ShowMessage (oak);
+					}
+					closeSelectionBox ();
 				}
-				closeSelectionBox ();
 			} else if (choices[selection].GetComponent<GUIText> ().text == "TOSS") {
 				if (Player.S.itemPack[Menu_Item.S.selectedItem].isTossable) {
 					Menu_Item.S.tossSelectedItem();
@@ -109,8 +117,22 @@ public class SelectionBox : MonoBehaviour {
 				Menu_Pokemon.S.closePokemonMenu();
 				closeSelectionBox ();
 			} else if (choices[selection].GetComponent<GUIText> ().text == "SWITCH") {
-				Menu_Pokemon.S.switchPokemon();
-				closeSelectionBox ();
+				if (Main.S.battleScreenOpen){
+					BattleScreen.S.doEnemyTurnNext = true;
+					if (Player.S.party[Menu_Pokemon.S.selectedPokemon].curHP == 0){
+						string[] m = {Player.S.party[Menu_Pokemon.S.selectedPokemon].pokemonNickname + " has no HP!"};
+						Dialog.S.ShowMessage(m);
+						closeSelectionBox();
+					}
+					BattleScreen.S.playerPokemon = Player.S.party[Menu_Pokemon.S.selectedPokemon];
+					BattleScreen.S.refreshBattleInfo();
+					closeSelectionBox();
+					Menu_Pokemon.S.closePokemonMenu();
+				} else {
+					Menu_Pokemon.S.switchingPokemon = Menu_Pokemon.S.selectedPokemon;
+					Menu_Pokemon.S.switching = true;
+					closeSelectionBox ();
+				}
 			}
 		}
 	}

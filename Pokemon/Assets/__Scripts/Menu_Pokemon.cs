@@ -10,7 +10,8 @@ public class Menu_Pokemon : MonoBehaviour {
 	public List<GameObject> pokemonSlots;
 	public int selectedPokemon;
 	int maxPokemonNameChar = 10;
-
+	public int switchingPokemon;
+	public bool switching = false;
 	
 	void Awake() {
 		S = this;
@@ -85,15 +86,6 @@ public class Menu_Pokemon : MonoBehaviour {
 		pokemonSlots [selectedPokemon].GetComponent<GUIText> ().color = Color.red;
 	}
 
-	public void switchPokemon(){
-		if (Player.S.party.Count < 2) {
-			print ("Nothing to switch.");
-			return;
-		} else {
-			print ("Do some switching");
-		}
-	}
-
 
 	// Update is called once per frame
 	void Update () {
@@ -116,9 +108,18 @@ public class Menu_Pokemon : MonoBehaviour {
 				if (pokemonSlots [selectedPokemon].GetComponent<GUIText> ().text == "CANCEL") {
 					closePokemonMenu ();
 				} else {
-					// Open up STATS/SWITCH menu
-					SelectionBox.S.setOptions("STATS", "SWITCH");
-					SelectionBox.S.openSelectionBox ();
+					if (switching){
+						switching = false;
+						Pokemon temp = Player.S.party[selectedPokemon];
+						Player.S.party[selectedPokemon] = Player.S.party[switchingPokemon];
+						Player.S.party[switchingPokemon] = temp;
+						closePokemonMenu();
+						showPokemonMenu();
+					} else {
+						// Open up STATS/SWITCH menu
+						SelectionBox.S.setOptions("STATS", "SWITCH");
+						SelectionBox.S.openSelectionBox ();
+					}
 				}
 			}
 		}

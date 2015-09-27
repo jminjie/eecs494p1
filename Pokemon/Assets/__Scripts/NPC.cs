@@ -27,11 +27,7 @@ public class NPC : MonoBehaviour {
 
 	public void PlayDialog(){
 		print (speech);
-		Dialog.S.gameObject.SetActive (true);
-		Color maxAlpha = GameObject.Find ("DialogBackground").GetComponent<GUITexture> ().color;
-		maxAlpha.a = 255;
-		GameObject.Find ("DialogBackground").GetComponent<GUITexture> ().color = maxAlpha;
-		Dialog.S.ShowMessage (speech);
+		Dialog.S.ShowMessage(speech);
 	}
 
 	public void moveUp(){
