@@ -106,7 +106,12 @@ public class Menu_Pokemon : MonoBehaviour {
 				MoveUpPokemonMenu ();
 			} else if (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.Z)) {
 				if (pokemonSlots [selectedPokemon].GetComponent<GUIText> ().text == "CANCEL") {
-					closePokemonMenu ();
+					if (Main.S.battleScreenOpen){
+						string[] mustSwitch = {"Must choose a Pokemon!"};
+						Dialog.S.ShowMessage(mustSwitch);
+					} else {
+						closePokemonMenu ();
+					}
 				} else {
 					if (switching){
 						switching = false;

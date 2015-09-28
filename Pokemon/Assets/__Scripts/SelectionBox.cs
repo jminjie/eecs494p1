@@ -118,16 +118,16 @@ public class SelectionBox : MonoBehaviour {
 				closeSelectionBox ();
 			} else if (choices[selection].GetComponent<GUIText> ().text == "SWITCH") {
 				if (Main.S.battleScreenOpen){
-					BattleScreen.S.doEnemyTurnNext = true;
 					if (Player.S.party[Menu_Pokemon.S.selectedPokemon].curHP == 0){
 						string[] m = {Player.S.party[Menu_Pokemon.S.selectedPokemon].pokemonNickname + " has no HP!"};
 						Dialog.S.ShowMessage(m);
 						closeSelectionBox();
+					} else {
+						BattleScreen.S.playerPokemon = Player.S.party[Menu_Pokemon.S.selectedPokemon];
+						BattleScreen.S.refreshBattleInfo();
+						closeSelectionBox();
+						Menu_Pokemon.S.closePokemonMenu();
 					}
-					BattleScreen.S.playerPokemon = Player.S.party[Menu_Pokemon.S.selectedPokemon];
-					BattleScreen.S.refreshBattleInfo();
-					closeSelectionBox();
-					Menu_Pokemon.S.closePokemonMenu();
 				} else {
 					Menu_Pokemon.S.switchingPokemon = Menu_Pokemon.S.selectedPokemon;
 					Menu_Pokemon.S.switching = true;

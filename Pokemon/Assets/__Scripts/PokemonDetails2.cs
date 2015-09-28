@@ -41,9 +41,16 @@ public class PokemonDetails2 : MonoBehaviour {
 			GUIText pokemonMovePPText = pokemonMovePP.GetComponent<GUIText>();
 			pokemonMovePPText.text = "pp " + curPokemon.moves[i].curPP.ToString()
 				+ "/" + curPokemon.moves[i].maxPP.ToString();
-			
 		}
 
+		for (int i = curPokemon.moves.Count; i < 4; i++) {
+			GameObject pokemonMove = transform.Find("PokemonMove" + (i+1).ToString()).gameObject;
+			GUIText pokemonMoveText = pokemonMove.GetComponent<GUIText>();
+			pokemonMoveText.text = "-";
+			GameObject pokemonMovePP = transform.Find("PokemonMovePP" + (i+1).ToString()).gameObject;
+			GUIText pokemonMovePPText = pokemonMovePP.GetComponent<GUIText>();
+			pokemonMovePPText.text = "--";
+		}
 		Main.S.pokemonDetailsOpen [1] = true;
 		gameObject.SetActive (true);
 	}

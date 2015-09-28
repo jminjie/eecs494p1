@@ -28,23 +28,26 @@ public class BattleScreen : MonoBehaviour {
 	public int selectedOption;
 
 	public int closeOnKeyDownX = 99;
-	bool switchOnKeyDownX;
+	public int switchOnKeyDownX = 99;
 	public bool doEnemyTurnNext = false;
 	public bool endBattleNext = false;
+
+	public bool lastBattleInSequence;
 	public bool isTrainerBattle;
+
 	public Pokemon playerPokemon = null;
-	public Pokemon enemyPokemon;
-	public bool lastBattleInSequence = true;
+	public Pokemon enemyPokemon = null;
+
 
 	void Awake () {
 		S = this;
 	}
-
-	// Use this for initialization
+	
 	void Start () {
 		closeBattleScreen ();
 		closeOnKeyDownX = 99;
-		
+		switchOnKeyDownX = 99;
+
 		foreach (Transform child in transform) {
 			optionSlots.Add(child.gameObject);
 		}
@@ -126,11 +129,10 @@ public class BattleScreen : MonoBehaviour {
 		Move chosenMove = enemyPokemon.moves[chosenMoveIndex];
 		List<string> enemyMoveDialog = chosenMove.doMove (enemyPokemon, playerPokemon, false);
 
-
 		if (playerPokemon.curHP == 0) {
 			enemyMoveDialog.Add(playerPokemon.pokemonNickname + " fainted!\n");
 			enemyMoveDialog.Add ("Switch pokemon!");
-			switchOnKeyDownX = true;
+			switchOnKeyDownX = 1 - enemyMoveDialog.Count;
 		}
 		Dialog.S.ShowMessage (enemyMoveDialog);
 
@@ -139,11 +141,12 @@ public class BattleScreen : MonoBehaviour {
 	public void showBattleScreen() {
 		// temporary
 		isTrainerBattle = true;
-		enemyPokemon = Player.S.party [1];
+		lastBattleInSequence = true;
+		enemyPokemon = Player.S.party [3];
 		// end temporary
 
 		closeOnKeyDownX = 99;
-		switchOnKeyDownX = false;
+		switchOnKeyDownX = 99;
 		doEnemyTurnNext = false;
 		lastBattleInSequence = true;
 
@@ -197,6 +200,12 @@ public class BattleScreen : MonoBehaviour {
 	}
 
 	void endBattle(){
+		// Reset Pokemon's battle stats
+		playerPokemon.battleAttack = playerPokemon.attack;
+		playerPokemon.battleDefense = playerPokemon.defense;
+		playerPokemon.battleSpeed = playerPokemon.speed;
+		playerPokemon.battleSpecial = playerPokemon.special;
+
 		List<string> endBattleDialog = new List<string>();
 		if (lastBattleInSequence && isTrainerBattle) {
 			endBattleDialog.Add("Enemy " + enemyPokemon.pokemonName + " fainted!\n");
@@ -212,9 +221,14 @@ public class BattleScreen : MonoBehaviour {
 		} else {
 			endBattleDialog.Add("Enemy " + enemyPokemon.pokemonName + " fainted!");
 			endBattleDialog.Add(playerPokemon.pokemonNickname + " gained " + (enemyPokemon.level * 8).ToString () + " EXP. Points!");
-			// Push x through dialog to close
-			closeOnKeyDownX = 1 - endBattleDialog.Count;
-			Dialog.S.ShowMessage (endBattleDialog);
+			if (lastBattleInSequence) {
+				// Push x through dialog to close
+				closeOnKeyDownX = 1 - endBattleDialog.Count;
+				Dialog.S.ShowMessage (endBattleDialog);
+			} else {
+				// Load next enemyPokemon
+
+			}
 		}
 	}
 
@@ -230,10 +244,10 @@ public class BattleScreen : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (switchOnKeyDownX) {
-			if (Input.GetKeyDown (KeyCode.X)) {
-				Menu_Pokemon.S.showPokemonMenu();
-			}
+		if (switchOnKeyDownX == 1) {
+			switchOnKeyDownX = 99;
+			Menu_Pokemon.S.showPokemonMenu();
+			doEnemyTurnNext = false;
 		} else if (closeOnKeyDownX == 1) {
 			closeOnKeyDownX = 99;
 			closeBattleScreen ();

@@ -10,38 +10,65 @@ public class Move : MonoBehaviour {
 	public string effectDialog;
 	int movePower;
 	bool isSpecial;
-	public delegate void doEffect(Pokemon attacker, Pokemon defender);
 
-	public Move(string name, string type, int maxpp, int curpp){
+	
+	public Move(string name, string type, string effect, int power, int pp, bool special){
 		moveName = name;
 		moveType = type;
-		maxPP = maxpp;
-		curPP = curpp;
-		effectDialog = "";
-		movePower = 0;
-		isSpecial = false;
-	}
-
-	public Move(string name, string type, string effect, int maxpp, int curpp){
-		moveName = name;
-		moveType = type;
-		maxPP = maxpp;
-		curPP = curpp;
+		maxPP = pp;
+		curPP = pp;
 		effectDialog = effect;
-		movePower = 0;
-		isSpecial = false;
-	}
-
-	public Move(string name, string type, int power, int maxpp, int curpp){
-		moveName = name;
-		moveType = type;
-		maxPP = maxpp;
-		curPP = curpp;
-		effectDialog = "";
 		movePower = power;
-		isSpecial = false;
+		isSpecial = special;
 	}
 
+	// Dictionary of moves power and PP
+	public static Move getMove(string name){
+		if (name == "TACKLE"){
+			return new Move ("TACKLE", "NORMAL", "", 5, 35, false);
+		} else if (name == "GROWL") {
+			return new Move ("GROWL", "NORMAL", "ATTACK fell!", 0, 40, false);
+		} else if (name == "TAIL WHIP"){
+			return new Move ("TAIL WHIP", "NORMAL", "DEFENSE fell!", 0, 40, false);
+		} else if (name == "EMBER"){
+			return new Move ("EMBER", "FIRE", "", 8, 25, true);
+		} else if (name == "VINE WHIP"){
+			return new Move ("VINE WHIP", "GRASS", "", 8, 25, true);
+		} else if (name == "WATER GUN"){
+			return new Move ("WATER GUN", "WATER", "", 8, 25, true);
+		} else if (name == "SCRATCH"){
+			return new Move ("SCRATCH", "NORMAL", "", 5, 35, false);
+		} else {
+			return new Move ("STRUGGLE", "NORMAL", "", 1, 99, false);
+		}
+	}
+
+	// Dictionary of move effects
+	string applyMoveEffect(Pokemon attacker, Pokemon defender){
+		string effect;
+		effect = defender.pokemonNickname + "'s " + effectDialog;
+		if (moveName == "GROWL") {
+			if (defender.attack > 2) {
+				print (defender.pokemonName + "'s BATTLE ATTACK fell by 2");
+				defender.battleAttack -= 2;
+			} else {
+				print (defender.pokemonName + "'s ATTACK won't go any lower!");
+				effect = defender.pokemonNickname + "'s ATTACK won't go any lower!";
+			}
+		} else if (moveName == "TAIL WHIP") {
+			if (defender.defense > 2){
+				print (defender.pokemonName + "'s BATTLE DEFENSE fell by 2");
+				defender.battleDefense -= 2;
+			} else {
+				print (defender.pokemonName + "'s DEFENSE won't go any lower!");
+				effect = defender.pokemonNickname + "'s DEFENSE won't go any lower!";
+			}
+		}
+		return effect;
+	}
+
+
+	// Add in more of the type advantages if necessary
 	float typeMultiplier(string type){
 		float multiplier = 1;
 		if (moveType == "FIRE") {
@@ -121,7 +148,7 @@ public class Move : MonoBehaviour {
 	}
 
 	public int damageCalc(Pokemon attacker, Pokemon defender, List<string> attackMessage){
-		float effectiveMovePower = (float)movePower;
+		float effectiveMovePower = (float) movePower;
 		if (Random.value < 0.1) {
 			effectiveMovePower *= 1.5f;
 			attackMessage.Add ("Critical hit!");
@@ -133,21 +160,24 @@ public class Move : MonoBehaviour {
 			attackMessage.Add("It's not very effective...");
 		}
 		effectiveMovePower *= typeMultiple;
+		print ("TypeMultiplier is " + typeMultiple.ToString ());
+		print ("EffectiveMovePower is " + effectiveMovePower.ToString ());
 		if (!isSpecial) {
-			return attacker.attack + Mathf.CeilToInt(effectiveMovePower) - defender.defense;
+			return attacker.battleAttack + Mathf.CeilToInt(effectiveMovePower) - defender.battleDefense;
 		} else {
-			return attacker.special + Mathf.CeilToInt(effectiveMovePower) - defender.special;
+			return attacker.battleSpecial + Mathf.CeilToInt(effectiveMovePower) - defender.battleSpecial;
 		}
 	}
 
 	public List<string> doMove(Pokemon attacker, Pokemon defender, bool playerIsAttacking){
+		curPP--;
 		List<string> dialog = new List<string>();
 		if (!playerIsAttacking) {
 			dialog.Add("Enemy " + attacker.pokemonName + " used " + moveName + "!");
 		} else {
 			dialog.Add(attacker.pokemonNickname + " used " + moveName + "!");
 		}
-		// assume moves either have an effect or do damage
+		// assume moves either have an effect or do damage but not both
 		if (effectDialog != "") {
 			dialog.Add(applyMoveEffect (attacker, defender));
 		} else {
@@ -157,29 +187,6 @@ public class Move : MonoBehaviour {
 			BattleScreen.S.refreshBattleInfo();
 		}
 		return dialog;
-	}
-
-	string applyMoveEffect(Pokemon attacker, Pokemon defender){
-		string effect;
-		effect = defender.pokemonNickname + "'s " + effectDialog;
-		if (moveName == "GROWL") {
-			if (defender.attack > 2) {
-				print (defender.pokemonName + "'s ATTACK fell by 2");
-				defender.attack -= 2;
-			} else {
-				print (defender.pokemonName + "'s ATTACK won't go any lower!");
-				effect = defender.pokemonNickname + "'s ATTACK won't go any lower!";
-			}
-		} else if (moveName == "TAIL WHIP") {
-			if (defender.defense > 2){
-				print (defender.pokemonName + "'s DEFENSE fell by 2");
-				defender.defense -= 2;
-			} else {
-				print (defender.pokemonName + "'s DEFENSE won't go any lower!");
-				effect = defender.pokemonNickname + "'s DEFENSE won't go any lower!";
-			}
-		}
-		return effect;
 	}
 
 }

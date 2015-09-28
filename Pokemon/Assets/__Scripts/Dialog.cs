@@ -56,9 +56,11 @@ public class Dialog : MonoBehaviour {
 		if (Main.S.inDialog && (Input.GetKeyDown (KeyCode.X))) {
 			// Internal logic so battle screen knows when to close
 			if (Main.S.battleScreenOpen && BattleScreen.S.closeOnKeyDownX != 99){
-				print (BattleScreen.S.closeOnKeyDownX);
 				BattleScreen.S.closeOnKeyDownX++;
+			} else if (Main.S.battleScreenOpen && BattleScreen.S.switchOnKeyDownX != 99){
+				BattleScreen.S.switchOnKeyDownX++;
 			}
+
 			//
 			if (speechNum == (speechLength - 1)) {
 				HideDialogBox ();
